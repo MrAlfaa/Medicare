@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check user login status and update UI
-    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    // Check authentication state and update UI
+    if (typeof updateUIForAuthState === 'function') {
+        updateUIForAuthState();
+    }
     
     // Explicitly add profile icon navigation
     const setupProfileNavigation = () => {

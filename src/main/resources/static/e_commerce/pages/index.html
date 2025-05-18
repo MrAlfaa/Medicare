@@ -3,41 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare - Online Medical Store</title>
+    <title>Medicare - Your Health, Our Priority</title>
     <link rel="stylesheet" href="/e_commerce/pages/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Add auth.js early in the page load -->
+    <script src="/e_commerce/pages/js/auth.js"></script>
 </head>
 <body>
 <!-- HEADER -->
 <header id="dynamic-header"></header>
 <script>
-    // Specify the correct path to your header.html file
+    // Load header
     fetch("/e_commerce/pages/pages/header.html")
         .then((response) => response.text())
         .then((data) => {
             document.getElementById("dynamic-header").innerHTML = data;
             
-            // After loading header, inject the user actions div
-            const userActionsDiv = document.querySelector('.user-actions');
-            if (userActionsDiv) {
-                userActionsDiv.innerHTML = `
-                    <a href="/e_commerce/pages/pages/login.html" class="action-link login-link">Login</a>
-                    <span class="divider">|</span>
-                    <a href="/e_commerce/pages/pages/register.html" class="action-link register-link">Register</a>
-                    <a href="/e_commerce/pages/pages/profile.html" class="action-link profile-link" style="display: none;">My Account</a>
-                `;
+            // After header is loaded, update auth UI
+            if (typeof updateAuthUI === 'function') {
+                setTimeout(updateAuthUI, 100); // Small delay to ensure DOM is updated
             }
-            
-            // Load header.js to handle authentication logic
-            const script = document.createElement('script');
-            script.src = "/e_commerce/pages/js/header.js";
-            document.body.appendChild(script);
-            
-            // Add navigation fix script after header is loaded
-            const navFixScript = document.createElement('script');
-            navFixScript.src = "/e_commerce/pages/js/navigation-fix.js";
-            document.body.appendChild(navFixScript);
         })
         .catch((error) => {
             console.error("Error loading header:", error);
@@ -84,10 +70,10 @@
             <i class='bx bx-user'></i>
             <span>My Account</span>
         </a> -->
-        <div class="mobile-auth">
+        <!-- <div class="mobile-auth">
             <a href="#" class="mobile-auth-link">Sign In</a>
             <a href="#" class="mobile-auth-link">Register</a>
-        </div>
+        </div> -->
     </div>
 </div>
 </header>
@@ -461,6 +447,7 @@
 
 <!-- JavaScript -->
 <script src="/e_commerce/pages/js/script.js"></script>
+<script src="/e_commerce/pages/js/auth-utils.js"></script>
 <script>
     // Check if user is logged in
     document.addEventListener('DOMContentLoaded', function() {
@@ -511,7 +498,3 @@
 <script src="/e_commerce/pages/js/navigation-fix.js"></script>
 </body>
 </html>
-
-</body>
-</html>
-

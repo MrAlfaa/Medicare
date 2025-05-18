@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+// Remove DOMContentLoaded event listener since this script is loaded after the header
+// and we want it to execute immediately
+(function() {
     // Check if user is logged in
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     
@@ -8,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginLink = document.querySelector('.login-link');
     const registerLink = document.querySelector('.register-link');
     const profileLink = document.querySelector('.profile-link');
+    const divider = document.querySelector('.user-actions .divider');
     
     if (currentUser) {
         // User is logged in
@@ -16,10 +19,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update header icons/links
         if (profileIcon) {
             profileIcon.setAttribute('href', '/e_commerce/pages/pages/profile.html');
+            profileIcon.setAttribute('title', `Hello, ${currentUser.username}`);
             
             // Make sure the link works by adding an explicit click handler
             profileIcon.addEventListener('click', function(e) {
-                e.preventDefault(); // Prevent default only if needed for debugging
+                e.preventDefault();
                 console.log("Profile icon clicked");
                 window.location.href = '/e_commerce/pages/pages/profile.html';
             });
@@ -32,42 +36,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update links in user-actions div
         if (loginLink) loginLink.style.display = 'none';
         if (registerLink) registerLink.style.display = 'none';
+        if (divider) divider.style.display = 'none';
         if (profileLink) {
             profileLink.style.display = 'inline-block';
             profileLink.setAttribute('href', '/e_commerce/pages/pages/profile.html');
-        }
-        
-        // Create user menu if it doesn't exist
-        const userActionsDiv = document.querySelector('.user-actions');
-        if (userActionsDiv) {
-            userActionsDiv.innerHTML = `
-                <span class="welcome-message">Welcome, ${currentUser.username}</span>
-                <span class="divider">|</span>
-                <a href="/e_commerce/pages/pages/profile.html" class="action-link profile-link">My Account</a>
-                <span class="divider">|</span>
-                <a href="#" id="logout-link" class="action-link">Logout</a>
-            `;
-            
-            // Add logout functionality
-            document.getElementById('logout-link').addEventListener('click', function(e) {
-                e.preventDefault();
-                sessionStorage.removeItem('currentUser');
-                window.location.href = '/e_commerce/pages/pages/login.html';
-            });
+            profileLink.textContent = `Hello, ${currentUser.username}`;
         }
     } else {
         // User is not logged in
-        if (profileIcon) {
-            profileIcon.setAttribute('href', '/e_commerce/pages/pages/login.html');
-        }
+        console.log("User is not logged in");
         
-        if (mobileProfileLink) {
-            mobileProfileLink.setAttribute('href', '/e_commerce/pages/pages/login.html');
-        }
-        
-        // Make sure login and register links are visible, profile link is hidden
+        // Make sure login and register are visible
         if (loginLink) loginLink.style.display = 'inline-block';
         if (registerLink) registerLink.style.display = 'inline-block';
+        if (divider) divider.style.display = 'inline-block';
         if (profileLink) profileLink.style.display = 'none';
     }
-});
+})(); // Self-executing function

@@ -65,6 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     isAdmin: data.isAdmin
                 }));
                 
+                // Update UI if we're not redirecting right away
+                if (typeof updateAuthUI === 'function') {
+                    updateAuthUI();
+                }
+                
                 // Redirect based on user role
                 if (data.isAdmin) {
                     // Redirect admin to admin dashboard
