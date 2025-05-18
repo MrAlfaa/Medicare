@@ -1,0 +1,278 @@
+<script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+        return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                    row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                    headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+    }
+</script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplements - MediCare</title>
+    <link rel="stylesheet" href="/e_commerce/pages/css/styles.css">
+    <link rel="stylesheet" href="/e_commerce/pages/css/supplements.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- HEADER -->
+<header id="dynamic-header"></header>
+<script>
+    fetch("header.html")
+        .then((response) => response.text())
+        .then((data) => {
+            document.getElementById("dynamic-header").innerHTML = data;
+        });
+</script>
+
+<!-- Mobile Navigation -->
+<div class="mobile-nav">
+    <div class="mobile-search">
+        <form action="#" method="get">
+            <input type="text" placeholder="Search for supplements...">
+            <button type="submit">
+                <i class='bx bx-search'></i>
+            </button>
+        </form>
+    </div>
+    <ul class="mobile-nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li class="mobile-dropdown">
+            <a href="#" class="mobile-dropdown-toggle">
+                Medicines
+                <i class='bx bx-chevron-down'></i>
+            </a>
+            <ul class="mobile-dropdown-menu">
+                <li><a href="#">Prescription Medicines</a></li>
+                <li><a href="#">Over-the-Counter</a></li>
+                <li><a href="#">Ayurvedic</a></li>
+                <li><a href="#">Homeopathy</a></li>
+            </ul>
+        </li>
+        <li class="mobile-dropdown">
+            <a href="#" class="mobile-dropdown-toggle">
+                Health Devices
+                <i class='bx bx-chevron-down'></i>
+            </a>
+            <ul class="mobile-dropdown-menu">
+                <li><a href="#">BP Monitors</a></li>
+                <li><a href="#">Glucometers</a></li>
+                <li><a href="#">Thermometers</a></li>
+                <li><a href="#">Nebulizers</a></li>
+            </ul>
+        </li>
+        <li><a href="supplements.html" class="active">Supplements</a></li>
+        <li><a href="#">Personal Care</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="mobile-user-actions">
+        <a href="#" class="mobile-action-link">
+            <i class='bx bx-heart'></i>
+            <span>Wishlist</span>
+        </a>
+        <a href="#" class="mobile-action-link">
+            <i class='bx bx-user'></i>
+            <span>My Account</span>
+        </a>
+        <div class="mobile-auth">
+            <a href="#" class="mobile-auth-link">Sign In</a>
+            <a href="#" class="mobile-auth-link">Register</a>
+        </div>
+    </div>
+</div>
+</header>
+
+<!-- SUPPLEMENTS SECTION -->
+<section class="supplements">
+    <div class="container">
+        <div class="section-header">
+            <h2>Supplements</h2>
+            <p>Boost your health with our range of dietary supplements</p>
+        </div>
+        <div class="filters">
+            <div class="filter-group">
+                <label for="category">Category:</label>
+                <select id="category">
+                    <option value="all">All</option>
+                    <option value="vitamins">Vitamins</option>
+                    <option value="minerals">Minerals</option>
+                    <option value="herbal">Herbal Supplements</option>
+                    <option value="protein">Protein Powders</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="price">Price:</label>
+                <select id="price">
+                    <option value="all">All</option>
+                    <option value="0-20">$0 - $20</option>
+                    <option value="20-50">$20 - $50</option>
+                    <option value="50+">$50+</option>
+                </select>
+            </div>
+        </div>
+        <div class="products-grid">
+            <div class="product-card" data-category="vitamins" data-price="24.99">
+                <div class="product-image">
+                    <img src="images/product_05.png" alt="Vitamin D3">
+                    <button class="wishlist-btn">
+                        <i class='bx bx-heart'></i>
+                    </button>
+                </div>
+                <div class="product-details">
+                    <div class="product-category">Vitamins</div>
+                    <h3 class="product-title">Vitamin D3</h3>
+                    <div class="product-rating">
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bx-star'></i>
+                        <span>(4.0)</span>
+                    </div>
+                    <div class="product-price-cart">
+                        <div class="product-price">
+                            <span class="current-price">Rs.150</span>
+                        </div>
+                        <button class="add-to-cart">
+                            <i class='bx bx-cart'></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="product-card" data-category="vitamins" data-price="15.99">
+                <div class="product-image">
+                    <img src="images/product_03.png" alt="Vitamin C">
+                    <div class="discount-badge">10% OFF</div>
+                    <button class="wishlist-btn">
+                        <i class='bx bx-heart'></i>
+                    </button>
+                </div>
+                <div class="product-details">
+                    <div class="product-category">Vitamins</div>
+                    <h3 class="product-title">Vitamin C</h3>
+                    <div class="product-rating">
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star-half'></i>
+                        <span>(4.5)</span>
+                    </div>
+                    <div class="product-price-cart">
+                        <div class="product-price">
+                            <span class="current-price">Rs150</span>
+                            <span class="original-price">Rs.200</span>
+                        </div>
+                        <button class="add-to-cart">
+                            <i class='bx bx-cart'></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="product-card" data-category="minerals" data-price="29.99">
+                <div class="product-image">
+                    <img src="images/product_06.png" alt="Magnesium">
+                    <button class="wishlist-btn">
+                        <i class='bx bx-heart'></i>
+                    </button>
+                </div>
+                <div class="product-details">
+                    <div class="product-category">Minerals</div>
+                    <h3 class="product-title">Magnesium</h3>
+                    <div class="product-rating">
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bx-star'></i>
+                        <span>(4.2)</span>
+                    </div>
+                    <div class="product-price-cart">
+                        <div class="product-price">
+                            <span class="current-price">Rs.300</span>
+                        </div>
+                        <button class="add-to-cart">
+                            <i class='bx bx-cart'></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="product-card" data-category="protein" data-price="49.99">
+                <div class="product-image">
+                    <img src="images/product_07.png" alt="Whey Protein">
+                    <button class="wishlist-btn">
+                        <i class='bx bx-heart'></i>
+                    </button>
+                </div>
+                <div class="product-details">
+                    <div class="product-category">Protein Powders</div>
+                    <h3 class="product-title">Whey Protein</h3>
+                    <div class="product-rating">
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star-half'></i>
+                        <span>(4.7)</span>
+                    </div>
+                    <div class="product-price-cart">
+                        <div class="product-price">
+                            <span class="current-price">Rs.30000</span>
+                        </div>
+                        <button class="add-to-cart">
+                            <i class='bx bx-cart'></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="dynamic-footer"></footer>
+<script>
+    fetch("footer.html")
+        .then((response) => response.text())
+        .then((data) => {
+            document.getElementById("dynamic-footer").innerHTML = data;
+        });
+</script>
+<script src="/e_commerce/pages/js/script.js"></script>
+<script src="/e_commerce/pages/js/supplements.js"></script>
+</body>
+</html>

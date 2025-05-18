@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - MediCare</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/e_commerce/pages/css/register.css">
+</head>
+<body>
+<!-- HEADER -->
+<header>
+    <div class="main-header">
+        <div class="container">
+            <div class="main-header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <span class="logo-icon">M</span>
+                        <span class="logo-text">Medi<span class="highlight">Care</span></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- REGISTRATION SECTION -->
+<section class="registration-section">
+    <div class="container">
+        <div class="registration-container">
+            <div class="registration-image">
+                <h2>Join MediCare Family</h2>
+                <p>Create an account to enjoy personalized health recommendations and exclusive offers.</p>
+                <img src="https://cdni.iconscout.com/illustration/premium/thumb/online-registration-4489376-3723246.png" alt="Registration">
+            </div>
+            <div class="registration-form-container">
+                <h2 class="form-title">Create Your Account</h2>
+
+                <div class="error-message" id="errorMessage" style="display: none;">
+                    <i class='bx bx-error-circle'></i>
+                    <span id="errorText"></span>
+                </div>
+
+                <form id="registrationForm" action="#" method="post">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="username">Full Name</label>
+                            <div class="input-field">
+                                <i class='bx bx-user'></i>
+                                <input type="text" id="username" name="username" placeholder="Enter your full name" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <div class="input-field">
+                                <i class='bx bx-phone'></i>
+                                <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-field">
+                            <i class='bx bx-envelope'></i>
+                            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Home Address</label>
+                        <div class="input-field">
+                            <i class='bx bx-home'></i>
+                            <input type="text" id="address" name="address" placeholder="Enter your address" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="input-field">
+                                <i class='bx bx-lock-alt'></i>
+                                <input type="password" id="password" name="password" placeholder="Create a password" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <div class="input-field">
+                                <i class='bx bx-lock-alt'></i>
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="agree" name="agree" required>
+                        <label for="agree">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+
+                    <div class="login-link">
+                        Already have an account? <a href="login.html">Sign In</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <p class="copyright">© 2025 MediCare. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Help Center</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/e_commerce/pages/js/register.js"></script>
+</body>
+</html>

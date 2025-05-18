@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediCare - Medicines</title>
+  <link rel="stylesheet" href="/e_commerce/pages/css/styles.css" />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+  />
+  <link
+          href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+          rel="stylesheet"
+  />
+  <style>
+    /* Additional styles for medicines page */
+    .breadcrumb {
+      background: linear-gradient(135deg, #a2ded0, #55cab7);
+      padding: 15px 0;
+    }
+
+    .breadcrumb-list {
+      display: flex;
+      align-items: center;
+    }
+
+    .breadcrumb-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .breadcrumb-item:not(:last-child)::after {
+      content: "/";
+      margin: 0 10px;
+      color: var(--dark-grey);
+    }
+
+    .breadcrumb-item a:hover {
+      color: var(--blue);
+    }
+
+    .medicines-container {
+      display: flex;
+      gap: 30px;
+      margin: 40px 0;
+      background-color: var(--light-blue);
+    }
+
+    .filter-sidebar {
+      width: 280px;
+      flex-shrink: 0;
+    }
+
+    .filter-section {
+      background-color: var(--white);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--grey);
+    }
+
+    .filter-list {
+      margin-bottom: 15px;
+    }
+
+    .filter-item {
+      margin-bottom: 10px;
+    }
+
+    .filter-checkbox {
+      display: flex;
+      align-items: center;
+    }
+
+    .filter-checkbox input {
+      margin-right: 10px;
+    }
+
+    .filter-checkbox label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .filter-count {
+      color: var(--dark-grey);
+      font-size: 12px;
+    }
+
+    .price-range {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .price-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--grey);
+      border-radius: 5px;
+      outline: none;
+      font-family: var(--poppins);
+    }
+
+    .filter-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background-color: var(--blue);
+      color: var(--white);
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: var(--poppins);
+      font-weight: 500;
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+    }
+
+    .filter-btn:hover {
+      background-color: #25a892;
+    }
+
+    .products-content {
+      flex: 1;
+    }
+
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .products-count {
+      font-size: 16px;
+      color: var(--dark-grey);
+    }
+
+    .products-sort {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sort-label {
+      font-size: 14px;
+      color: var(--dark-grey);
+    }
+
+    .sort-select {
+      padding: 8px 12px;
+      border: 1px solid var(--grey);
+      border-radius: 5px;
+      outline: none;
+      font-family: var(--poppins);
+      cursor: pointer;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+      gap: 5px;
+    }
+
+    .pagination-item {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      background-color: var(--white);
+      color: var(--dark);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pagination-item.active {
+      background-color: var(--blue);
+      color: var(--white);
+    }
+
+    .pagination-item:hover:not(.active) {
+      background-color: var(--light-blue);
+    }
+
+    @media (max-width: 992px) {
+      .medicines-container {
+        flex-direction: column;
+      }
+
+      .filter-sidebar {
+        width: 100%;
+      }
+    }
+
+    .medicine-tags {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .medicine-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background-color: var(--light-blue);
+      color: var(--blue);
+    }
+
+    .medicine-tag.prescription {
+      background-color: var(--light-purple);
+      color: var(--purple);
+    }
+
+    .medicine-tag.otc {
+      background-color: var(--light-yellow);
+      color: var(--orange);
+    }
+
+    .filter-toggle {
+      display: none;
+      width: 100%;
+      padding: 10px;
+      background-color: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      font-family: var(--poppins);
+      font-weight: 500;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .medicine-main {
+      background-color: #D8F3EF;
+    }
+
+    @media (max-width: 992px) {
+      .filter-toggle {
+        display: flex;
+      }
+
+      .filter-sidebar {
+        display: none;
+      }
+
+      .filter-sidebar.active {
+        display: block;
+      }
+    }
+
+    .loader {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid var(--blue);
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 50px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+    }
+  </style>
+</head>
+<body>
+<!-- HEADER -->
+<header id="dynamic-header"></header>
+<script>
+  fetch("header.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("dynamic-header").innerHTML = data;
+          });
+</script>
+<script src="/e_commerce/pages/js/auth-check.js"></script>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container">
+    <ul class="breadcrumb-list">
+      <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+      <li class="breadcrumb-item">Medicines</li>
+    </ul>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="medicine-main">
+  <div class="container">
+    <h1>All Medicines</h1>
+
+    <button class="filter-toggle">
+      <i class="bx bx-filter"></i>
+      <span>Show Filters</span>
+    </button>
+
+    <div class="medicines-container">
+      <!-- FILTER SIDEBAR -->
+      <div class="filter-sidebar">
+        <div class="filter-section">
+          <h3 class="filter-title">Categories</h3>
+          <div class="filter-list">
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cat-all" checked />
+                <label for="cat-all"
+                >All Medicines
+                  <span class="filter-count">(352)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cat-prescription" />
+                <label for="cat-prescription"
+                >Prescription
+                  <span class="filter-count">(124)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cat-otc" />
+                <label for="cat-otc"
+                >Over-the-Counter
+                  <span class="filter-count">(98)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cat-ayurvedic" />
+                <label for="cat-ayurvedic"
+                >Ayurvedic <span class="filter-count">(65)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cat-homeopathy" />
+                <label for="cat-homeopathy"
+                >Homeopathy <span class="filter-count">(43)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cat-generic" />
+                <label for="cat-generic"
+                >Generic <span class="filter-count">(22)</span></label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3 class="filter-title">Health Conditions</h3>
+          <div class="filter-list">
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cond-fever" />
+                <label for="cond-fever"
+                >Fever & Pain
+                  <span class="filter-count">(48)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cond-cold" />
+                <label for="cond-cold"
+                >Cold & Cough
+                  <span class="filter-count">(37)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cond-digestive" />
+                <label for="cond-digestive"
+                >Digestive Health
+                  <span class="filter-count">(29)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cond-cardiac" />
+                <label for="cond-cardiac"
+                >Cardiac Care
+                  <span class="filter-count">(23)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cond-diabetes" />
+                <label for="cond-diabetes"
+                >Diabetes <span class="filter-count">(19)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="cond-skin" />
+                <label for="cond-skin"
+                >Skin Care <span class="filter-count">(16)</span></label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3 class="filter-title">Brands</h3>
+          <div class="filter-list">
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="brand-1" />
+                <label for="brand-1"
+                >MediTrust <span class="filter-count">(42)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="brand-2" />
+                <label for="brand-2"
+                >HealthPlus <span class="filter-count">(38)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="brand-3" />
+                <label for="brand-3"
+                >NatureCare <span class="filter-count">(31)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="brand-4" />
+                <label for="brand-4"
+                >MediLife <span class="filter-count">(27)</span></label
+                >
+              </div>
+            </div>
+            <div class="filter-item">
+              <div class="filter-checkbox">
+                <input type="checkbox" id="brand-5" />
+                <label for="brand-5"
+                >VitaMax <span class="filter-count">(24)</span></label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3 class="filter-title">Price Range</h3>
+          <div class="price-range">
+            <input
+                    type="number"
+                    class="price-input"
+                    placeholder="Min"
+                    value="0"
+            />
+            <span>-</span>
+            <input
+                    type="number"
+                    class="price-input"
+                    placeholder="Max"
+                    value="100"
+            />
+          </div>
+          <button class="filter-btn">Apply Filter</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTS CONTENT -->
+      <div class="products-content">
+        <div class="products-header">
+          <div class="products-count">
+            Showing <span>1-12</span> of <span>352</span> products
+          </div>
+          <div class="products-sort">
+            <span class="sort-label">Sort by:</span>
+            <select class="sort-select">
+              <option value="popularity">Popularity</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="newest">Newest First</option>
+              <option value="rating">Highest Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="products-grid">
+          <!-- Product 1 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_08.png" alt="Paracetamol Tablets" />
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Pain Relief</div>
+              <h3 class="product-title">Paracetamol Tablets 500mg</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag otc">OTC</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star-half"></i>
+                <span>(4.5)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.50.00</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 2 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_09.png" alt="Amoxicillin Capsules" />
+              <div class="discount-badge">10% OFF</div>
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Antibiotics</div>
+              <h3 class="product-title">Amoxicillin Capsules 500mg</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag prescription">Prescription</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bx-star"></i>
+                <span>(4.0)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.58.00</span>
+                  <span class="original-price">Rs.60.00</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 3 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_10.png" alt="Cetirizine Tablets" />
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Allergy</div>
+              <h3 class="product-title">Cetirizine Tablets 10mg</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag otc">OTC</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <span>(4.9)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.30.00</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 4 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_11.png" alt="Ashwagandha" />
+              <div class="discount-badge">15% OFF</div>
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Ayurvedic</div>
+              <h3 class="product-title">Ashwagandha Extract 500mg</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag">Ayurvedic</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bx-star"></i>
+                <span>(4.2)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.1500</span>
+                  <span class="original-price">Rs.1600</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 5 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_12.png" alt="Omeprazole" />
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Digestive Health</div>
+              <h3 class="product-title">Omeprazole Capsules 20mg</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag prescription">Prescription</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star-half"></i>
+                <span>(4.7)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.450</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 6 -->
+          <!-- Continuing from the last product card (Product 6) -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_13.png" alt="Ibuprofen" />
+              <div class="discount-badge">5% OFF</div>
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Pain Relief</div>
+              <h3 class="product-title">Ibuprofen Tablets 400mg</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag otc">OTC</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bx-star"></i>
+                <span>(4.0)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.150</span>
+                  <span class="original-price">Rs.170</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 7 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_14.png" alt="Metformin" />
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Diabetes</div>
+              <h3 class="product-title">Metformin Tablets 500mg</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag prescription">Prescription</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star-half"></i>
+                <span>(4.5)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.450</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 8 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_15.png" alt="Multivitamin" />
+              <div class="discount-badge">20% OFF</div>
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Vitamins & Supplements</div>
+              <h3 class="product-title">Daily Multivitamin Tablets</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag otc">OTC</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bx-star"></i>
+                <span>(4.1)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.500</span>
+                  <span class="original-price">Rs.600</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 9 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_16.png" alt="Arnica" />
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Homeopathy</div>
+              <h3 class="product-title">Arnica Montana 30C</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag">Homeopathy</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star-half"></i>
+                <i class="bx bx-star"></i>
+                <span>(3.6)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.600</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 10 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_17.png" alt="Losartan" />
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Cardiac Care</div>
+              <h3 class="product-title">Losartan Tablets 50mg</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag prescription">Prescription</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bx-star"></i>
+                <span>(4.8)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.550</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 11 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_18.png" alt="Cough Syrup" />
+              <div class="discount-badge">8% OFF</div>
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Cold & Cough</div>
+              <h3 class="product-title">Honey & Ginger Cough Syrup</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag otc">OTC</span>
+                <span class="medicine-tag">Ayurvedic</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bx-star"></i>
+                <span>(4.2)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.700</span>
+                  <span class="original-price">Rs.750</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 12 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="images/product_19.png" alt="Clotrimazole" />
+              <button class="wishlist-btn">
+                <i class="bx bx-heart"></i>
+              </button>
+            </div>
+            <div class="product-details">
+              <div class="product-category">Skin Care</div>
+              <h3 class="product-title">Clotrimazole Cream 1%</h3>
+              <div class="medicine-tags">
+                <span class="medicine-tag otc">OTC</span>
+              </div>
+              <div class="product-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star-half"></i>
+                <i class="bx bx-star"></i>
+                <span>(3.7)</span>
+              </div>
+              <div class="product-price-cart">
+                <div class="product-price">
+                  <span class="current-price">Rs.900</span>
+                </div>
+                <button class="add-to-cart">
+                  <i class="bx bx-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <a class="pagination-item active">1</a>
+          <a class="pagination-item">2</a>
+          <a class="pagination-item">3</a>
+          <a class="pagination-item">4</a>
+          <a class="pagination-item">5</a>
+          <a class="pagination-item">
+            <i class="bx bx-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer id="dynamic-footer"></footer>
+<script>
+  fetch("footer.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("dynamic-footer").innerHTML = data;
+          });
+</script>
+
+<!-- JavaScript for filter toggle and mobile navigation -->
+<script>
+  // Mobile menu toggle
+  const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
+  const mobileNav = document.querySelector(".mobile-nav");
+
+  mobileMenuToggle.addEventListener("click", function () {
+    mobileNav.classList.toggle("active");
+  });
+
+  // Mobile dropdown toggle
+  const mobileDropdownToggles = document.querySelectorAll(
+          ".mobile-dropdown-toggle"
+  );
+
+  mobileDropdownToggles.forEach((toggle) => {
+    toggle.addEventListener("click", function (e) {
+      e.preventDefault();
+      this.parentElement.classList.toggle("active");
+    });
+  });
+
+  // Filter sidebar toggle for mobile
+  const filterToggle = document.querySelector(".filter-toggle");
+  const filterSidebar = document.querySelector(".filter-sidebar");
+
+  filterToggle.addEventListener("click", function () {
+    filterSidebar.classList.toggle("active");
+    this.innerHTML = filterSidebar.classList.contains("active")
+            ? '<i class="bx bx-x"></i><span>Hide Filters</span>'
+            : '<i class="bx bx-filter"></i><span>Show Filters</span>';
+  });
+</script>
+<script src="/e_commerce/pages/js/medicines.js"></script>
+</body>
+</html>

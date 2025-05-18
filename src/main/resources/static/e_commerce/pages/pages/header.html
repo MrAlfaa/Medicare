@@ -1,0 +1,160 @@
+<header>
+    <div class="header-top">
+        <div class="container">
+            <div class="header-top-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class='bx bx-phone'></i>
+                        <span>+94 7778926506</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class='bx bx-envelope'></i>
+                        <span>support@medicare.com</span>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <a href="/e_commerce/pages/pages/login.html" class="action-link login-link">Login</a>
+                    <span class="divider">|</span>
+                    <a href="/e_commerce/pages/pages/register.html" class="action-link register-link">Register</a>
+                    <a href="/e_commerce/pages/pages/profile.html" class="action-link profile-link" style="display: none;">My Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-header">
+        <div class="container">
+            <div class="main-header-content">
+                <div class="logo">
+                    <a href="/e_commerce/pages/index.html">
+                        <div class="logo-icon">
+                            <i class='bx bx-plus-medical'></i>
+                        </div>
+                        <div class="logo-text"><span class="highlight">Medi</span>Care</div>
+                    </a>
+                </div>
+
+                <div class="search-bar">
+                    <form action="#" method="get">
+                        <input type="text" placeholder="Search for medicines, devices...">
+                        <button type="submit">
+                            <i class='bx bx-search'></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="header-icons">
+                    <a href="#" class="icon-link wishlist-icon">
+                        <i class='bx bx-heart'></i>
+                    </a>
+                    <a href="/e_commerce/pages/pages/profile.html" class="icon-link profile-icon" id="profile-icon">
+                        <i class='bx bx-user'></i>
+                    </a>
+                    <a href="/e_commerce/pages/pages/cart.html" class="icon-link cart-icon">
+                        <i class='bx bx-cart'></i>
+                        <div class="cart-count">0</div>
+                    </a>
+                    <button class="mobile-menu-toggle">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>    </div>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="/e_commerce/pages/index.html" class="active">Home</a></li>
+
+                <li class="has-dropdown">
+                    <a href="/e_commerce/pages/pages/medicines.html" onclick="window.location.href='/e_commerce/pages/pages/medicines.html'; return false;">
+                        Medicines
+                        <i class='bx bx-chevron-down'></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="/e_commerce/pages/pages/medicines.html?category=prescription">Prescription Medicines</a></li>
+                        <li><a href="/e_commerce/pages/pages/medicines.html?category=otc">Over-the-Counter</a></li>
+                        <li><a href="/e_commerce/pages/pages/medicines.html?category=ayurvedic">Ayurvedic</a></li>
+                        <li><a href="/e_commerce/pages/pages/medicines.html?category=homeopathy">Homeopathy</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-dropdown">
+                    <a href="#">
+                        Health Devices
+                        <i class='bx bx-chevron-down'></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="#">BP Monitors</a></li>
+                        <li><a href="#">Glucometers</a></li>
+                        <li><a href="#">Thermometers</a></li>
+                        <li><a href="#">Nebulizers</a></li>
+                    </ul>
+                </li>
+                <li><a href="/e_commerce/pages/pages/supplements.html">Supplements</a></li>
+
+                <li><a href="#">Personal Care</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="mobile-search">
+            <form action="#" method="get">
+                <input type="text" placeholder="Search for medicines, devices...">
+                <button type="submit" title="Search">
+                    <i class='bx bx-search'></i>
+                </button>
+            </form>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="/e_commerce/pages/index.html" class="active">Home</a></li>
+            <li class="mobile-dropdown">
+                <a href="#" class="mobile-dropdown-toggle">
+                    Medicines
+                    <i class='bx bx-chevron-down'></i>
+                </a>
+                <ul class="mobile-dropdown-menu">
+                    <li><a href="#">Prescription Medicines</a></li>
+                    <li><a href="#">Over-the-Counter</a></li>
+                    <li><a href="#">Ayurvedic</a></li>
+                    <li><a href="#">Homeopathy</a></li>
+                </ul>
+            </li>
+            <li class="mobile-dropdown">
+                <a href="#" class="mobile-dropdown-toggle">
+                    Health Devices
+                    <i class='bx bx-chevron-down'></i>
+                </a>
+                <ul class="mobile-dropdown-menu">
+                    <li><a href="#">BP Monitors</a></li>
+                    <li><a href="#">Glucometers</a></li>
+                    <li><a href="#">Thermometers</a></li>
+                    <li><a href="#">Nebulizers</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Supplements</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="mobile-user-actions">
+            <a href="#" class="mobile-action-link">
+                <i class='bx bx-heart'></i>
+                <span>Wishlist</span>
+            </a>
+            <a href="#" class="mobile-action-link">
+                <i class='bx bx-user'></i>
+                <span>My Account</span>
+            </a>
+            <div class="mobile-auth">
+                <a href="/e_commerce/pages/pages/login.html" class="mobile-auth-link">Sign In</a>
+                <a href="/e_commerce/pages/pages/register.html" class="mobile-auth-link">Register</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add the header script -->
+    <script src="/e_commerce/pages/js/header.js"></script>
+</header>

@@ -1,0 +1,1 @@
+[{"id":1,"name":"test 1","description":"des 212","price":100.0,"stock":10,"category":"Antacid","prescription":"No"},{"id":2,"name":"test 2","description":"des 2","price":200.0,"stock":40,"category":"Antihistamine","prescription":"Yes"},{"id":3,"name":"Drug k","description":"aaaaaaaaaaa","price":100.0,"stock":34,"category":"Antihistamine","prescription":"Yes"}]

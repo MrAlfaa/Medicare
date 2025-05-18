@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Checkout</title>
+    <!-- Bootstrap & MDB CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Your custom CSS -->
+    <link rel="stylesheet" href="/e_commerce/pages/css/styles.css">
+</head>
+<body>
+<section class="h-100 h-custom" style="background-color: #D8F3EF;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <h5 class="mb-3"><a href="cart.html" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Back to cart</a></h5>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div>
+                                        <p class="mb-1">Checkout</p>
+                                        <p class="mb-0">Complete your purchase</p>
+                                    </div>
+                                </div>
+
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="mb-4">Shipping Information</h5>
+                                        <form>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <div data-mdb-input-init class="form-outline">
+                                                        <input type="text" id="firstName" class="form-control" required />
+                                                        <label class="form-label" for="firstName">First name</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <div data-mdb-input-init class="form-outline">
+                                                        <input type="text" id="lastName" class="form-control" required />
+                                                        <label class="form-label" for="lastName">Last name</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div data-mdb-input-init class="form-outline mb-3">
+                                                <input type="text" id="address" class="form-control" required />
+                                                <label class="form-label" for="address">Address</label>
+                                            </div>
+
+                                            <div data-mdb-input-init class="form-outline mb-3">
+                                                <input type="text" id="address2" class="form-control" />
+                                                <label class="form-label" for="address2">Address 2 (Optional)</label>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-5 mb-3">
+                                                    <div data-mdb-input-init class="form-outline">
+                                                        <input type="text" id="country" class="form-control" required />
+                                                        <label class="form-label" for="country">Country</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <div data-mdb-input-init class="form-outline">
+                                                        <input type="text" id="state" class="form-control" required />
+                                                        <label class="form-label" for="state">State</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div data-mdb-input-init class="form-outline">
+                                                        <input type="text" id="zip" class="form-control" required />
+                                                        <label class="form-label" for="zip">Zip</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <hr class="mb-4">
+
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="same-address">
+                                                <label class="form-check-label" for="same-address">
+                                                    Shipping address is the same as my billing address
+                                                </label>
+                                            </div>
+
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="save-info">
+                                                <label class="form-check-label" for="save-info">
+                                                    Save this information for next time
+                                                </label>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="mb-4">Payment</h5>
+
+                                        <div class="d-block my-3">
+                                            <div class="form-check">
+                                                <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked required>
+                                                <label class="form-check-label" for="credit">Credit card</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input id="debit" name="paymentMethod" type="radio" class="form-check-input" required>
+                                                <label class="form-check-label" for="debit">Debit card</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required>
+                                                <label class="form-check-label" for="paypal">PayPal</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="cc-name" class="form-label">Name on card</label>
+                                                <input type="text" class="form-control" id="cc-name" placeholder="" required>
+                                                <small class="text-muted">Full name as displayed on card</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="cc-number" class="form-label">Credit card number</label>
+                                                <input type="text" class="form-control" id="cc-number" placeholder="" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <label for="cc-expiration" class="form-label">Expiration</label>
+                                                <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="cc-cvv" class="form-label">CVV</label>
+                                                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-5">
+                                <div class="card bg-primary text-white rounded-3">
+                                    <div class="card-body">
+                                        <h5 class="mb-4">Order Summary</h5>
+
+                                        <div class="card mb-3 bg-light text-dark">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span>Collagen</span>
+                                                    <span>Es.9900.00</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span>Baby cheramy Shampoo</span>
+                                                    <span>Rs.800.00</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span>Sustagen Chocolate</span>
+                                                    <span>Rs.3700.00</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Ortho Shield</span>
+                                                    <span>Rs.2900.00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between">
+                                            <p class="mb-2">Subtotal</p>
+                                            <p class="mb-2">Rs.4798.00</p>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <p class="mb-2">Shipping</p>
+                                            <p class="mb-2">Rs.120.00</p>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-4">
+                                            <p class="mb-2">Total (Incl. taxes)</p>
+                                            <p class="mb-2">Rs.4818.00</p>
+                                        </div>
+
+                                        <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-block btn-lg">
+                                            <div class="d-flex justify-content-between">
+                                                <span>Place Order</span>
+                                                <span>Rs.4818.00 <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
+                                            </div>
+                                        </button>
+
+                                        <hr class="my-4">
+
+                                        <p class="small text-white-50">By placing your order, you agree to our <a href="#" class="text-white">Terms of Service</a> and <a href="#" class="text-white">Privacy Policy</a>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bootstrap & MDB JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+<!-- Your custom JS -->
+<script src="/e_commerce/pages/js/script.js"></script>
+</body>
+</html>

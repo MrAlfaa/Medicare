@@ -1,0 +1,88 @@
+package com.medicare.medicare.repository;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.medicare.medicare.model.User;
+import org.springframework.stereotype.Repository;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public class UserFileRepository {
+    private static final String FILE_PATH = "src/main/resources/data/users.json";
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public List<User> findAll() {
+        try {
+            File file = new File(FILE_PATH);
+            if (!file.exists()) {
+                return new ArrayList<>();
+            }
+            return objectMapper.readValue(file, new TypeReference<List<User>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Optional<User> findById(Long id) {
+        return findAll().stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst();
+    }
+    
+    public Optional<User> findByEmail(String email) {
+        if (email == null) {
+            return Optional.empty();
+        }
+        
+        return findAll().stream()
+                .filter(user -> email.equalsIgnoreCase(user.getEmail())) // Case-insensitive match
+                .findFirst();
+    }
+
+    public User save(User user) {
+        List<User> users = findAll();
+
+        // Assign ID if it's a new user
+        if (user.getId() == null) {
+            long maxId = users.stream()
+                    .mapToLong(User::getId)
+                    .max()
+                    .orElse(0);
+            user.setId(maxId + 1);
+            users.add(user);
+        } else {
+            // Update existing user
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getId().equals(user.getId())) {
+                    users.set(i, user);
+                    break;
+                }
+            }
+        }
+
+        saveAll(users);
+        return user;
+    }
+
+    private void saveAll(List<User> users) {
+        try {
+            File file = new File(FILE_PATH);
+            file.getParentFile().mkdirs();  // Create directories if they don't exist
+            objectMapper.writeValue(file, users);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(Long id) {
+        List<User> users = findAll();
+        users.removeIf(user -> user.getId().equals(id));
+        saveAll(users);
+    }
+}

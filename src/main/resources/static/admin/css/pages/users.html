@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - MediCare Admin</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/css/users.css">
+</head>
+<body>
+<!-- Add admin auth check script -->
+<script src="/admin/css/js/admin-auth-check.js"></script>
+
+<!-- SIDEBAR -->
+<section id="sidebar">
+    <a href="#" class="brand">
+        <i class='bx bxs-capsule'></i>
+        <span class="text">MediStore Admin</span>
+    </a>
+    <ul class="side-menu top">
+        <li>
+            <a href="/admin/css/index.html">
+                <i class='bx bxs-dashboard'></i>
+                <span class="text">Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/css/pages/medicine.html">
+                <i class='bx bxs-capsule'></i>
+                <span class="text">Medicines</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/css/pages/prescriptions.html">
+                <i class='bx bxs-file'></i>
+                <span class="text">Prescriptions</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/css/pages/order.html">
+                <i class='bx bxs-cart'></i>
+                <span class="text">Orders</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/css/pages/inventory.html">
+                <i class='bx bxs-box'></i>
+                <span class="text">Inventory</span>
+            </a>
+        </li>
+        <li class="active">
+            <a href="/admin/css/pages/users.html">
+                <i class='bx bx-user'></i>
+                <span class="text">Users</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/css/pages/delivery.html">
+                <i class='bx bxs-report'></i>
+                <span class="text">Delivery</span>
+            </a>
+        </li>
+    </ul>
+    <ul class="side-menu">
+        <li>
+            <a href="/admin/css/pages/settings.html">
+                <i class='bx bxs-cog'></i>
+                <span class="text">Settings</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="logout" id="logout-link">
+                <i class='bx bxs-log-out-circle'></i>
+                <span class="text">Logout</span>
+            </a>
+        </li>
+    </ul>
+</section>
+<!-- SIDEBAR -->
+
+<!-- CONTENT -->
+<section id="content">
+    <!-- NAVBAR -->
+    <nav>
+        <i class='bx bx-menu toggle-sidebar'></i>
+        <a href="#" class="nav-link">Users</a>
+        <form action="#" class="search-form">
+            <div class="form-input">
+                <input type="search" placeholder="Search...">
+                <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+            </div>
+        </form>
+        <div class="theme-toggle">
+            <input type="checkbox" id="switch-mode" hidden>
+            <label for="switch-mode" class="switch-mode"></label>
+        </div>
+        <a href="#" class="notification">
+            <i class='bx bxs-bell'></i>
+            <span class="num">3</span>
+        </a>
+        <div class="profile">
+            <img src="https://via.placeholder.com/36" alt="Admin profile">
+        </div>
+    </nav>
+    <!-- NAVBAR -->
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <div class="head-title">
+            <div class="left">
+                <h1>User Management</h1>
+                <ul class="breadcrumb">
+                    <li><a href="/admin/css/index.html">Dashboard</a></li>
+                    <li><i class='bx bx-chevron-right'></i></li>
+                    <li><a class="active" href="#">Users</a></li>
+                </ul>
+            </div>
+            <button class="btn btn-primary" id="addUserBtn">
+                <i class='bx bx-plus'></i> Add New User
+            </button>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="table-data">
+            <div class="order">
+                <div class="head">
+                    <h3>User Records</h3>
+                    <div class="table-actions">
+                        <div class="entries-filter">
+                            <span>Show</span>
+                            <select id="entriesFilter">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span>entries</span>
+                        </div>
+                        <div class="search-filter">
+                            <input type="text" id="tableSearch" placeholder="Search...">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table id="userTable">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                        <!-- Table will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="table-info">
+                        Showing <span id="showingStart">1</span> to <span id="showingEnd">10</span> of <span id="totalEntries">0</span> entries
+                    </div>
+                    <div class="pagination">
+                        <button class="pagination-btn" id="prevPage"><i class='bx bx-chevron-left'></i></button>
+                        <div class="page-numbers" id="pageNumbers">
+                            <!-- Pagination will be handled by JavaScript -->
+                        </div>
+                        <button class="pagination-btn" id="nextPage"><i class='bx bx-chevron-right'></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- MAIN CONTENT -->
+
+    <!-- USER MODAL -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2 id="modalTitle">Add New User</h2>
+            <form id="userForm">
+                <!-- Hidden userId field -->
+                <input type="hidden" id="userId" name="userId" value="0">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone">
+                </div>
+                <div class="input-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select</option>
+                        <option value="USER">User</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address"></textarea>
+                </div>
+                <div id="passwordFields">
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password">
+                    </div>
+                    <div class="input-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- USER MODAL -->
+
+    <!-- VIEW USER MODAL -->
+    <div class="modal" id="viewUserModal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2>User Details</h2>
+            <div class="user-details">
+                <div class="user-detail-item">
+                    <span class="detail-label">Username:</span>
+                    <span id="viewUsername" class="detail-value"></span>
+                </div>
+                <div class="user-detail-item">
+                    <span class="detail-label">Email:</span>
+                    <span id="viewEmail" class="detail-value"></span>
+                </div>
+                <div class="user-detail-item">
+                    <span class="detail-label">Phone:</span>
+                    <span id="viewPhone" class="detail-value"></span>
+                </div>
+                <div class="user-detail-item">
+                    <span class="detail-label">Address:</span>
+                    <span id="viewAddress" class="detail-value"></span>
+                </div>
+                <div class="user-detail-item">
+                    <span class="detail-label">Role:</span>
+                    <span id="viewRole" class="detail-value"></span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="closeViewBtn" class="btn btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- VIEW USER MODAL -->
+</section>
+<!-- CONTENT -->
+
+<!-- JavaScript -->
+<script src="/admin/css/js/users.js"></script>
+
+</body>
+</html>

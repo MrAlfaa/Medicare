@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - MediCare</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/e_commerce/pages/css/styles.css">
+    <link rel="stylesheet" href="/e_commerce/pages/css/profile.css">
+</head>
+
+<body>
+<!-- AUTH CHECK -->
+<script src="/e_commerce/pages/js/auth-check.js"></script>
+
+<!-- HEADER -->
+<header id="dynamic-header"></header>
+<script>
+    fetch("/e_commerce/pages/pages/header.html")
+        .then((response) => response.text())
+        .then((data) => {
+            document.getElementById("dynamic-header").innerHTML = data;
+            // Execute header.js logic after loading header
+            const script = document.createElement('script');
+            script.src = "/e_commerce/pages/js/header.js";
+            document.body.appendChild(script);
+        })
+        .catch((error) => {
+            console.error("Error loading header:", error);
+        });
+</script>
+
+<!-- ACCOUNT SECTION -->
+<section class="account">
+    <div class="container">
+        <div class="section-header">
+            <h2>My Account</h2>
+            <p>Manage your profile, orders, and preferences</p>
+        </div>
+        <div class="account-content">
+            <!-- Profile Section -->
+            <div class="account-card profile-card">
+                <h3>Profile Information</h3>
+                <div class="profile-details">
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <label>Name:</label>
+                            <span id="profile-username">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email:</label>
+                            <span id="profile-email">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Phone:</label>
+                            <span id="profile-phone">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Address:</label>
+                            <span id="profile-address">Loading...</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary edit-profile">Edit Profile</button>
+                            <button class="btn btn-secondary logout-btn">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order History -->
+            <div class="account-card order-card">
+                <h3>Order History</h3>
+                <div class="order-list" id="order-list">
+                    <!-- This will be populated by JavaScript -->
+                    <div class="order-empty">
+                        <i class='bx bx-package'></i>
+                        <p>No orders found</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Edit Profile Modal -->
+<div class="modal" id="edit-profile-modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Edit Profile</h2>
+        <form id="edit-profile-form">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required readonly>
+                <small>Email cannot be changed</small>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" required></textarea>
+            </div>
+            <div class="form-group password-field">
+                <label for="current-password">Current Password:</label>
+                <input type="password" id="current-password" name="currentPassword">
+                <small>Leave blank if you don't want to change your password</small>
+            </div>
+            <div class="form-group password-field">
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" name="newPassword">
+            </div>
+            <div class="form-group password-field">
+                <label for="confirm-password">Confirm New Password:</label>
+                <input type="password" id="confirm-password" name="confirmPassword">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-outline cancel-edit">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal" id="order-details-modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Order Details</h2>
+        <div class="order-details-content">
+            <!-- Order details will be populated here -->
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-outline close-details">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="dynamic-footer"></footer>
+<script>
+    fetch("/e_commerce/pages/pages/footer.html")
+        .then((response) => response.text())
+        .then((data) => {
+            document.getElementById("dynamic-footer").innerHTML = data;
+        })
+        .catch((error) => {
+            console.error("Error loading footer:", error);
+        });
+</script>
+
+<script src="/e_commerce/pages/js/profile.js"></script>
+</body>
+</html>

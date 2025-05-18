@@ -1,0 +1,357 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Order Confirmation</title>
+    <!-- Bootstrap & MDB CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+     <link href="styles/confirmation.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #D8F3EF;
+            margin: 0;
+            padding: 60px 0;
+        }
+        .thank-you-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .order-summary-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-bottom: 5px dashed #ccc;
+        }
+        .order-summary-card .row {
+            margin-bottom: 10px;
+        }
+        .order-summary-header {
+            background-color: #D8F3EF;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .order-summary-header .col-3 {
+            font-weight: bold;
+            text-align: center;
+        }
+        .btn-custom {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            margin-right: 10px;
+        }
+        .btn-custom:hover {
+            background-color: #e65b50;
+        }
+        .modal-content {
+            border-radius: 15px;
+            background-color: #D8F3EF;
+        }
+        .rating-bar {
+            height: 20px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .rating-fill {
+            height: 100%;
+            background-color: #ffca28;
+            border-radius: 10px;
+        }
+        .review-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .review-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+        .review-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .modal-header {
+            border-bottom: none;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #333;
+        }
+        .form-control {
+            border-radius: 5px;
+            background-color: white;
+            border: none;
+            padding: 10px;
+        }
+        .form-control::placeholder {
+            color: #aaa;
+        }
+        .btn-add-review {
+            background-color: #4ECDC4;
+            color: white;
+            border-radius: 25px;
+            padding: 10px 30px;
+            border: none;
+            width: 100%;
+            font-weight: 500;
+        }
+        .btn-add-review:hover {
+            background-color: #45B7AF;
+        }
+        .star-rating {
+            color: #ffca28;
+            font-size: 24px;
+        }
+        .star-rating i {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Order Confirmation Section -->
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="thank-you-card">
+                        <i class="fas fa-check-circle fa-3x mb-3" style="color: #4ECDC4;"></i>
+                        <h1 class="mb-3">Thank You for Your Order!</h1>
+                        <p class="mb-4">Your order has been successfully placed. You'll receive a confirmation email soon.</p>
+                        <h4>Billing Address</h4>
+                        <p><strong>Name:</strong> John Doe</p>
+                        <p><strong>Address:</strong> 123 Medical Lane, Colombo, SL</p>
+                        <p><strong>Phone:</strong> +94 11 234 5678</p>
+                        <p><strong>Email:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a983868187c78d868ca9848c8d808a889b8cc78582">[email&#160;protected]</a></p>
+                        <a href="index.html" class="btn btn-custom mt-3">Track Your Order</a>
+                        <a href="index.html" class="btn btn-custom mt-2">Continue Shopping</a>
+                        <a href="#" class="btn btn-custom mt-2" data-bs-toggle="modal" data-bs-target="#reviewModal">Submit a Review</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="order-summary-card">
+                        <h4>Order Summary</h4>
+                        <div class="order-summary-header row">
+                            <div class="col-3">Order Date</div>
+                            <div class="col-3">Order Number</div>
+                            <div class="col-3">Payment Method</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">May 07, 2025</div>
+                            <div class="col-3">#MC123456</div>
+                            <div class="col-3">Credit Card</div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6 d-flex align-items-center">
+                                <span>Collagen (2 x Rs.4950.00)</span>
+                            </div>
+                            <div class="col-6 text-end">Rs.9900.00</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 d-flex align-items-center">
+                                <span>Baby Cheramy Shampoo (2 x Rs.400.00)</span>
+                            </div>
+                            <div class="col-6 text-end">Rs.800.00</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 d-flex align-items-center">
+                                <span>Sustagen Chocolate (1 x Rs.3700.00)</span>
+                            </div>
+                            <div class="col-6 text-end">Rs.3700.00</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 d-flex align-items-center">
+                                <span>Ortho Shield (1 x Rs.2900.00)</span>
+                            </div>
+                            <div class="col-6 text-end">Rs.2900.00</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-6">Subtotal</div>
+                            <div class="col-6 text-end">Rs.17300.00</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">Shipping</div>
+                            <div class="col-6 text-end">Rs.120.00</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6"><strong>Order Total</strong></div>
+                            <div class="col-6 text-end"><strong>Rs.17420.00</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewModalLabel">Submit a Review</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="rating" class="form-label">Rating *</label>
+                            <div class="star-rating">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                                <input type="hidden" id="rating" name="rating" value="0">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reviewTitle" class="form-label">Review Title</label>
+                            <input type="text" class="form-control" id="reviewTitle" placeholder="Review Title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="reviewContent" class="form-label">Review Content</label>
+                            <textarea class="form-control" id="reviewContent" rows="3" placeholder="Review Content"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">User Name</label>
+                            <input type="text" class="form-control" id="userName" placeholder="First and Last Name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="userEmail" class="form-label">User Email</label>
+                            <input type="email" class="form-control" id="userEmail" placeholder="example@email.com">
+                        </div>
+                        <button type="submit" class="btn btn-add-review">ADD REVIEW</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & MDB JS -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+
+    <script src="confirmation.js"></script>  
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const stars = document.querySelectorAll('.star-rating i');
+            const ratingInput = document.querySelector('#rating');
+
+            stars.forEach(star => {
+                star.addEventListener('click', function () {
+                    const rating = this.getAttribute('data-rating');
+                    ratingInput.value = rating;
+
+                    stars.forEach(s => {
+                        if (s.getAttribute('data-rating') <= rating) {
+                            s.classList.add('text-warning');
+                        } else {
+                            s.classList.remove('text-warning');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93cec88df9896767',t:'MTc0Njc2ODQwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>

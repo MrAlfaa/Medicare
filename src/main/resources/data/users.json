@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "username": "Admin",
+    "email": "admin@gmail.com",
+    "phone": "1234567890",
+    "address": "Admin Office",
+    "password": "admin123",
+    "role": "ADMIN"
+  },
+  {
+    "id": 2,
+    "username": "Dhananjaya",
+    "email": "dhananjaya@gmail.com",
+    "phone": "07778926506",
+    "address": "colombo, malabe",
+    "password": "Dhananjaya@99",
+    "role": "USER"
+  }
+]

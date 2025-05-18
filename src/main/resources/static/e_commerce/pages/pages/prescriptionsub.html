@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Submitted - MediCare</title>
+    <link rel="stylesheet" href="/e_commerce/pages/css/styles.css">
+    <link rel="stylesheet" href="/e_commerce/pages/css/pre.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- HEADER -->
+<header id="dynamic-header"></header>
+<script>
+    fetch("header.html")
+        .then((response) => response.text())
+        .then((data) => {
+            document.getElementById("dynamic-header").innerHTML = data;
+        });
+</script>
+
+<!-- Mobile Navigation -->
+<div class="mobile-nav">
+    <div class="mobile-search">
+        <form action="#" method="get">
+            <input type="text" placeholder="Search for medicines, devices...">
+            <button type="submit">
+                <i class='bx bx-search'></i>
+            </button>
+        </form>
+    </div>
+    <ul class="mobile-nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li class="mobile-dropdown">
+            <a href="#" class="mobile-dropdown-toggle">
+                Medicines
+                <i class='bx bx-chevron-down'></i>
+            </a>
+            <ul class="mobile-dropdown-menu">
+                <li><a href="#">Prescription Medicines</a></li>
+                <li><a href="#">Over-the-Counter</a></li>
+                <li><a href="#">Ayurvedic</a></li>
+                <li><a href="#">Homeopathy</a></li>
+            </ul>
+        </li>
+        <li class="mobile-dropdown">
+            <a href="#" class="mobile-dropdown-toggle">
+                Health Devices
+                <i class='bx bx-chevron-down'></i>
+            </a>
+            <ul class="mobile-dropdown-menu">
+                <li><a href="#">BP Monitors</a></li>
+                <li><a href="#">Glucometers</a></li>
+                <li><a href="#">Thermometers</a></li>
+                <li><a href="#">Nebulizers</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Supplements</a></li>
+        <li><a href="#">Personal Care</a></li>
+        <li><a href="prescription.html">Upload Prescription</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="mobile-user-actions">
+        <a href="#" class="mobile-action-link">
+            <i class='bx bx-heart'></i>
+            <span>Wishlist</span>
+        </a>
+        <a href="#" class="mobile-action-link">
+            <i class='bx bx-user'></i>
+            <span>My Account</span>
+        </a>
+        <div class="mobile-auth">
+            <a href="#" class="mobile-auth-link">Sign In</a>
+            <a href="#" class="mobile-auth-link">Register</a>
+        </div>
+    </div>
+</div>
+
+<!-- SUCCESS MESSAGE SECTION -->
+<section class="success-section">
+    <div class="container success-container">
+        <div class="success-message">
+            <i class='bx bx-check-circle success-icon'></i>
+            <h1>Prescription Submitted Successfully!</h1>
+            <p>Thank you for submitting your prescription. Our pharmacy team is reviewing it and will contact you shortly.</p>
+
+            <div class="order-details">
+                <h3>Your Prescription Details</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Reference Number:</span>
+                    <span class="detail-value">RX-2023-05892</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Patient Name:</span>
+                    <span class="detail-value">John Doe</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Doctor's Name:</span>
+                    <span class="detail-value">Dr. Sarah Johnson</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Submission Date:</span>
+                    <span class="detail-value">November 15, 2023</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value"><strong>Under Review</strong></span>
+                </div>
+            </div>
+
+            <div class="next-steps">
+                <h3>What Happens Next?</h3>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Our licensed pharmacist will verify your prescription (usually within 1-2 hours)</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">You'll receive an email/SMS with your order summary and payment link</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">After payment confirmation, we'll prepare your medicines</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Your order will be delivered to your preferred address</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="index.html" class="btn btn-primary">
+                    <i class='bx bx-home'></i> Back to Home
+                </a>
+                <a href="#" class="btn btn-outline">
+                    <i class='bx bx-history'></i> View Order Status
+                </a>
+                <a href="/e_commerce/pages/pages/prescription.html" class="btn btn-outline">
+                    <i class='bx bx-upload'></i> Upload Another
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="dynamic-footer"></footer>
+<script>
+    fetch("footer.html")
+        .then((response) => response.text())
+        .then((data) => {
+            document.getElementById("dynamic-footer").innerHTML = data;
+        });
+</script>
+
+<script src="/e_commerce/pages/js/script.js"></script>
+</body>
+</html>
