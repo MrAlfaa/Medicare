@@ -210,35 +210,64 @@ document.addEventListener("DOMContentLoaded", function() {
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
 
-        // Validation for new users
-        if (userId === "0" && password !== confirmPassword) {
-            showAlert("Passwords do not match", "error");
+        // Validation
+        if (!username || !email) {
+            showAlert("Username and email are required", "error");
             return;
+        }
+
+        // Validate passwords for new users
+        if (userId === "0") {
+            if (!password) {
+                showAlert("Password is required for new users", "error");
+                return;
+            }
+            if (password !== confirmPassword) {
+                showAlert("Passwords do not match", "error");
+                return;
+            }
         }
 
         // Create user object
         const userData = {
-            id: userId !== "0" ? parseInt(userId) : null,
             username,
             email,
             phone,
             address,
-            role,
-            password: password || undefined
+            role
         };
+
+        // Add password only if provided (for new users or if changing password)
+        if (password) {
+            userData.password = password;
+        }
+
+        // For existing users, include the ID
+        if (userId !== "0") {
+            userData.id = parseInt(userId);
+        }
 
         // Determine if it's an add or update operation
         const isUpdate = userId !== "0";
-        const url = isUpdate ? `/api/users/${userId}` : '/api/users/register';
-        const method = isUpdate ? 'PUT' : 'POST';
+        
+        // Use the correct endpoint based on operation type
+        // For update, use the AdminController's /admin/users/save endpoint
+        // For new users, use the UserController's /api/users/register endpoint
+        const url = isUpdate ? '/admin/users/save' : '/api/users/register';
+        const method = 'POST'; // Both endpoints use POST
+        
+        // Display loading indicator
+        showAlert("Processing...", "info");
 
         // Send request to API
         fetch(url, {
             method: method,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': isUpdate ? 'application/x-www-form-urlencoded' : 'application/json'
             },
-            body: JSON.stringify(userData)
+            body: isUpdate 
+                ? new URLSearchParams(Object.entries(userData)).toString() 
+                : JSON.stringify(userData)
         })
         .then(response => {
             if (!response.ok) {
@@ -249,24 +278,24 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             showAlert(`User ${isUpdate ? 'updated' : 'created'} successfully`, "success");
             closeModal();
-            loadUsers();
+            loadUsers(); // Reload the users table
         })
         .catch(error => {
             console.error('Error:', error);
-            showAlert(error.message, "error");
+            showAlert(`Error: ${error.message}`, "error");
         });
     }
 
     // Delete user
     function deleteUser(userId) {
-        fetch(`/api/users/${userId}`, {
-            method: 'DELETE'
+        fetch(`/admin/users/delete/${userId}`, {
+            method: 'POST'
         })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to delete user');
             }
-            return response.json();
+            return response.text();
         })
         .then(data => {
             showAlert("User deleted successfully", "success");
@@ -274,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => {
             console.error('Error:', error);
-            showAlert("Failed to delete user", "error");
+            showAlert("Failed to delete user. " + error.message, "error");
         });
     }
 
@@ -298,14 +327,23 @@ document.addEventListener("DOMContentLoaded", function() {
         if (userForm) userForm.reset();
         if (document.getElementById("userId")) document.getElementById("userId").value = "0";
         if (modalTitle) modalTitle.textContent = "Add New User";
-        if (passwordFields) passwordFields.style.display = "block";
+        
+        // Show password fields and make them required
+        if (passwordFields) {
+            passwordFields.style.display = "block";
+            const passwordLabel = document.querySelector('label[for="password"]');
+            if (passwordLabel) {
+                passwordLabel.innerHTML = "Password <span class='required'>*</span>";
+            }
+        }
+        
         if (userModal) userModal.style.display = "flex";
         userForm.dataset.mode = "add";
     }
 
     // Open modal for editing user
     function openEditModal(id) {
-        fetch(`/api/users/${id}`)
+        fetch(`/admin/users/get/${id}`)
             .then(response => {
                 if (!response.ok) throw new Error('Network response was not ok');
                 return response.json();
@@ -317,7 +355,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (document.getElementById("phone")) document.getElementById("phone").value = user.phone || "";
                 if (document.getElementById("address")) document.getElementById("address").value = user.address || "";
                 if (document.getElementById("role")) document.getElementById("role").value = user.role;
-                if (passwordFields) passwordFields.style.display = "none";
+                
+                // Clear password fields for existing users
+                if (document.getElementById("password")) document.getElementById("password").value = "";
+                if (document.getElementById("confirmPassword")) document.getElementById("confirmPassword").value = "";
+                
+                // Show password fields but make them optional
+                if (passwordFields) {
+                    passwordFields.style.display = "block";
+                    const passwordLabel = document.querySelector('label[for="password"]');
+                    if (passwordLabel) {
+                        passwordLabel.innerHTML = "Password <small>(Leave blank to keep current password)</small>";
+                    }
+                }
+                
                 if (modalTitle) modalTitle.textContent = "Edit User";
                 if (userModal) userModal.style.display = "flex";
                 userForm.dataset.mode = "edit";
@@ -330,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Open modal for viewing user
     function openViewModal(id) {
-        fetch(`/api/users/${id}`)
+        fetch(`/admin/users/get/${id}`)
             .then(response => {
                 if (!response.ok) throw new Error('Network response was not ok');
                 return response.json();
@@ -366,7 +417,7 @@ document.addEventListener("DOMContentLoaded", function() {
             filteredData = [...userData];
         } else {
             filteredData = userData.filter(user => 
-                user.username.toLowerCase().includes(searchTerm) ||
+                               user.username.toLowerCase().includes(searchTerm) ||
                 user.email.toLowerCase().includes(searchTerm) ||
                 (user.phone && user.phone.toLowerCase().includes(searchTerm)) ||
                 (user.address && user.address.toLowerCase().includes(searchTerm))
@@ -456,3 +507,4 @@ document.addEventListener("DOMContentLoaded", function() {
     // Initialize the page
     init();
 });
+
