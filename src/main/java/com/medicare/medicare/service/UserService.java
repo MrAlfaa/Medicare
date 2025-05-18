@@ -65,7 +65,7 @@ public class UserService {
         System.out.println("Provided password: " + password);
         
         // Check if passwords match
-        boolean passwordMatches = user.getPassword().equals(password);
+        boolean passwordMatches = password.equals(user.getPassword());
         System.out.println("Passwords match: " + passwordMatches);
         
         if (passwordMatches) {

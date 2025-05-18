@@ -1,6 +1,7 @@
 package com.medicare.medicare.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medicare.medicare.model.User;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,13 @@ import java.util.Optional;
 @Repository
 public class UserFileRepository {
     private static final String FILE_PATH = "src/main/resources/data/users.json";
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
+
+    public UserFileRepository() {
+        this.objectMapper = new ObjectMapper();
+        // Configure ObjectMapper to ignore unknown properties
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     public List<User> findAll() {
         try {
@@ -22,9 +29,6 @@ public class UserFileRepository {
             if (!file.exists()) {
                 return new ArrayList<>();
             }
-            
-            // Configure ObjectMapper to ignore unknown properties
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             
             return objectMapper.readValue(file, new TypeReference<List<User>>() {});
         } catch (IOException e) {
