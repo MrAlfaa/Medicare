@@ -43,22 +43,33 @@ public class UserService {
     }
 
     public User authenticate(String email, String password) {
+        System.out.println("Attempting to authenticate: " + email);
+        
+        if (email == null || password == null) {
+            System.out.println("Email or password is null");
+            return null;
+        }
+        
+        // Trim the email to prevent whitespace issues
+        email = email.trim();
+        
         User user = findByEmail(email);
         
-        // Debug logging to see what's happening
-        System.out.println("Attempting to authenticate: " + email);
-        if (user != null) {
-            System.out.println("User found, comparing passwords");
-            System.out.println("Stored password: " + user.getPassword());
-            System.out.println("Provided password: " + password);
-            
-            // Check if passwords match
-            boolean passwordMatches = user.getPassword().equals(password);
-            System.out.println("Passwords match: " + passwordMatches);
-            
-            if (passwordMatches) {
-                return user;
-            }
+        if (user == null) {
+            System.out.println("User not found with email: " + email);
+            return null;
+        }
+        
+        System.out.println("User found, comparing passwords");
+        System.out.println("Stored password: " + user.getPassword());
+        System.out.println("Provided password: " + password);
+        
+        // Check if passwords match
+        boolean passwordMatches = user.getPassword().equals(password);
+        System.out.println("Passwords match: " + passwordMatches);
+        
+        if (passwordMatches) {
+            return user;
         }
         
         return null;

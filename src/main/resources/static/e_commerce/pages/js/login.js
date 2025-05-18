@@ -56,8 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.message === 'Login successful') {
                 // Save user data to sessionStorage
                 sessionStorage.setItem('currentUser', JSON.stringify({
+                    id: data.id,
                     username: data.username,
-                    email: email,
+                    email: data.email,
+                    phone: data.phone,
+                    address: data.address,
+                    role: data.role,
                     isAdmin: data.isAdmin
                 }));
                 

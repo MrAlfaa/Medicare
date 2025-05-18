@@ -41,6 +41,17 @@ public class UserController {
         }
     }
 
+    // Get user by email (for profile page)
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
@@ -68,8 +79,13 @@ public class UserController {
         if (user != null) {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Login successful");
+            response.put("id", user.getId());          // Add ID
             response.put("username", user.getUsername());
+            response.put("email", user.getEmail());    // Add email
+            response.put("phone", user.getPhone());    // Add phone
+            response.put("address", user.getAddress()); // Add address
             response.put("isAdmin", user.isAdmin());
+            response.put("role", user.getRole());      // Add role
             
             return ResponseEntity.ok(response);
         } else {
@@ -99,25 +115,20 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
-    // Update user
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    // Update user by email (for profile page)
+    @PutMapping("/email/{email}")
+    public ResponseEntity<?> updateUserByEmail(@PathVariable String email, @RequestBody User updatedUser) {
         try {
             // Check if user exists
-            User existingUser = userService.findById(id);
+            User existingUser = userService.findByEmail(email);
             if (existingUser == null) {
                 return ResponseEntity.notFound().build();
             }
             
-            // Check if email is taken by another user
-            User userWithSameEmail = userService.findByEmail(updatedUser.getEmail());
-            if (userWithSameEmail != null && !userWithSameEmail.getId().equals(id)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("message", "Email already in use by another user"));
-            }
+            // Set ID from existing user
+            updatedUser.setId(existingUser.getId());
             
-            // Set ID and update
-            updatedUser.setId(id);
+            // Update
             User result = userService.update(updatedUser);
             return ResponseEntity.ok(Map.of("message", "User updated successfully"));
         } catch (Exception e) {

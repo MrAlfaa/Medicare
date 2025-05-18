@@ -102,26 +102,29 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadUserProfile() {
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     
-    // Placeholder for API call - using current user data from session storage for now
-    // In a real app, you would fetch the full user data from the server
-    fetch(`/api/users/${currentUser.email}`)
+    // Use existing session data to update the UI immediately
+    updateProfileUI(currentUser);
+    
+    // Try to get fresh data from API using email (since ID might not be available)
+    fetch(`/api/users/email/${currentUser.email}`)
         .then(response => {
             if (!response.ok) {
-                // If API is not available, use session data
-                updateProfileUI(currentUser);
+                console.log("Could not fetch user by email, using session data");
                 return null;
             }
             return response.json();
         })
         .then(userData => {
             if (userData) {
+                // Update UI with fresh data
                 updateProfileUI(userData);
+                
+                // Update session storage with latest data
+                sessionStorage.setItem('currentUser', JSON.stringify(userData));
             }
         })
         .catch(error => {
             console.error('Error fetching user data:', error);
-            // Fallback to session data
-            updateProfileUI(currentUser);
         });
 }
 
@@ -137,10 +140,14 @@ function updateProfileUI(userData) {
 function populateEditForm() {
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     
-    // Fetch latest user data - fallback to session data if API fails
-    fetch(`/api/users/${currentUser.email}`)
+    // Use current session data to fill the form
+    fillForm(currentUser);
+    
+    // Try to get fresh data from API
+    fetch(`/api/users/email/${currentUser.email}`)
         .then(response => {
             if (!response.ok) {
+                console.log("Could not fetch user by email for edit form");
                 return null;
             }
             return response.json();
@@ -148,13 +155,10 @@ function populateEditForm() {
         .then(userData => {
             if (userData) {
                 fillForm(userData);
-            } else {
-                fillForm(currentUser);
             }
         })
         .catch(error => {
             console.error('Error fetching user data for edit:', error);
-            fillForm(currentUser);
         });
 }
 
@@ -178,10 +182,12 @@ function updateProfile() {
     
     // Prepare data for API
     const userData = {
+        id: currentUser.id,
         username: formData.get('username'),
         email: formData.get('email'),
         phone: formData.get('phone'),
-        address: formData.get('address')
+        address: formData.get('address'),
+        role: currentUser.role // Keep the existing role
     };
     
     // Handle password change
@@ -196,10 +202,17 @@ function updateProfile() {
         }
         userData.currentPassword = currentPassword;
         userData.newPassword = newPassword;
+        userData.password = newPassword; // Set the new password
+    } else {
+        // Keep the existing password
+        userData.password = currentUser.password;
     }
     
+    // Determine the correct API endpoint
+    const apiUrl = userData.id ? `/api/users/${userData.id}` : `/api/users/email/${userData.email}`;
+    
     // Send update request to API
-    fetch(`/api/users/${currentUser.email}`, {
+    fetch(apiUrl, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -216,16 +229,10 @@ function updateProfile() {
     })
     .then(data => {
         // Update session storage with new data
-        const updatedUser = {
-            ...currentUser,
-            username: userData.username,
-            phone: userData.phone,
-            address: userData.address
-        };
-        sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        sessionStorage.setItem('currentUser', JSON.stringify(userData));
         
         // Update UI
-        updateProfileUI(updatedUser);
+        updateProfileUI(userData);
         
         // Close modal
         document.getElementById('edit-profile-modal').style.display = 'none';
@@ -238,14 +245,8 @@ function updateProfile() {
         
         // If API fails, simulate success for demo purposes
         // In production, you would show a proper error
-        const updatedUser = {
-            ...currentUser,
-            username: userData.username,
-            phone: userData.phone,
-            address: userData.address
-        };
-        sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
-        updateProfileUI(updatedUser);
+        sessionStorage.setItem('currentUser', JSON.stringify(userData));
+        updateProfileUI(userData);
         document.getElementById('edit-profile-modal').style.display = 'none';
         showNotification('Profile updated successfully!', 'success');
     });

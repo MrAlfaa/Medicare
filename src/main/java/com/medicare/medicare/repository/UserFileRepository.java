@@ -22,6 +22,10 @@ public class UserFileRepository {
             if (!file.exists()) {
                 return new ArrayList<>();
             }
+            
+            // Configure ObjectMapper to ignore unknown properties
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            
             return objectMapper.readValue(file, new TypeReference<List<User>>() {});
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,9 +44,22 @@ public class UserFileRepository {
             return Optional.empty();
         }
         
-        return findAll().stream()
-                .filter(user -> email.equalsIgnoreCase(user.getEmail())) // Case-insensitive match
-                .findFirst();
+        // Add more debugging
+        System.out.println("Finding user by email: " + email);
+        List<User> users = findAll();
+        System.out.println("Total users found: " + users.size());
+        
+        for (User user : users) {
+            System.out.println("Comparing with: " + user.getEmail());
+            // Trim both emails and do case-insensitive comparison
+            if (email.trim().equalsIgnoreCase(user.getEmail().trim())) {
+                System.out.println("User found!");
+                return Optional.of(user);
+            }
+        }
+        
+        System.out.println("User not found with email: " + email);
+        return Optional.empty();
     }
 
     public User save(User user) {
