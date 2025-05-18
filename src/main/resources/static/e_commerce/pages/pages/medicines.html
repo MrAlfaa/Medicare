@@ -292,6 +292,37 @@
         text-align: center;
         padding: 50px 20px;
     }
+    
+    /* Notification styles */
+    .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--blue);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 5px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+    
+    .notification.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .pulse {
+        animation: pulse 0.3s ease;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -458,7 +489,7 @@
             <div class="filter-item">
               <div class="filter-checkbox">
                 <input type="checkbox" id="brand-2" />
-                <label for="brand-2"
+                                <label for="brand-2"
                 >HealthPlus <span class="filter-count">(38)</span></label
                 >
               </div>
@@ -515,7 +546,7 @@
       <div class="products-content">
         <div class="products-header">
           <div class="products-count">
-            Showing <span>1-12</span> of <span>352</span> products
+            Showing <span id="showing-start">0</span>-<span id="showing-end">0</span> of <span id="total-products">0</span> products
           </div>
           <div class="products-sort">
             <span class="sort-label">Sort by:</span>
@@ -529,426 +560,14 @@
           </div>
         </div>
 
-        <div class="products-grid">
-          <!-- Product 1 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_08.png" alt="Paracetamol Tablets" />
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Pain Relief</div>
-              <h3 class="product-title">Paracetamol Tablets 500mg</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag otc">OTC</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star-half"></i>
-                <span>(4.5)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.50.00</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 2 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_09.png" alt="Amoxicillin Capsules" />
-              <div class="discount-badge">10% OFF</div>
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Antibiotics</div>
-              <h3 class="product-title">Amoxicillin Capsules 500mg</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag prescription">Prescription</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bx-star"></i>
-                <span>(4.0)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.58.00</span>
-                  <span class="original-price">Rs.60.00</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 3 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_10.png" alt="Cetirizine Tablets" />
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Allergy</div>
-              <h3 class="product-title">Cetirizine Tablets 10mg</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag otc">OTC</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <span>(4.9)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.30.00</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 4 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_11.png" alt="Ashwagandha" />
-              <div class="discount-badge">15% OFF</div>
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Ayurvedic</div>
-              <h3 class="product-title">Ashwagandha Extract 500mg</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag">Ayurvedic</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bx-star"></i>
-                <span>(4.2)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.1500</span>
-                  <span class="original-price">Rs.1600</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 5 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_12.png" alt="Omeprazole" />
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Digestive Health</div>
-              <h3 class="product-title">Omeprazole Capsules 20mg</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag prescription">Prescription</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star-half"></i>
-                <span>(4.7)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.450</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 6 -->
-          <!-- Continuing from the last product card (Product 6) -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_13.png" alt="Ibuprofen" />
-              <div class="discount-badge">5% OFF</div>
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Pain Relief</div>
-              <h3 class="product-title">Ibuprofen Tablets 400mg</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag otc">OTC</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bx-star"></i>
-                <span>(4.0)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.150</span>
-                  <span class="original-price">Rs.170</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 7 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_14.png" alt="Metformin" />
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Diabetes</div>
-              <h3 class="product-title">Metformin Tablets 500mg</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag prescription">Prescription</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star-half"></i>
-                <span>(4.5)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.450</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 8 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_15.png" alt="Multivitamin" />
-              <div class="discount-badge">20% OFF</div>
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Vitamins & Supplements</div>
-              <h3 class="product-title">Daily Multivitamin Tablets</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag otc">OTC</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bx-star"></i>
-                <span>(4.1)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.500</span>
-                  <span class="original-price">Rs.600</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 9 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_16.png" alt="Arnica" />
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Homeopathy</div>
-              <h3 class="product-title">Arnica Montana 30C</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag">Homeopathy</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star-half"></i>
-                <i class="bx bx-star"></i>
-                <span>(3.6)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.600</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 10 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_17.png" alt="Losartan" />
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Cardiac Care</div>
-              <h3 class="product-title">Losartan Tablets 50mg</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag prescription">Prescription</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bx-star"></i>
-                <span>(4.8)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.550</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 11 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_18.png" alt="Cough Syrup" />
-              <div class="discount-badge">8% OFF</div>
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Cold & Cough</div>
-              <h3 class="product-title">Honey & Ginger Cough Syrup</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag otc">OTC</span>
-                <span class="medicine-tag">Ayurvedic</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bx-star"></i>
-                <span>(4.2)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.700</span>
-                  <span class="original-price">Rs.750</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product 12 -->
-          <div class="product-card">
-            <div class="product-image">
-              <img src="images/product_19.png" alt="Clotrimazole" />
-              <button class="wishlist-btn">
-                <i class="bx bx-heart"></i>
-              </button>
-            </div>
-            <div class="product-details">
-              <div class="product-category">Skin Care</div>
-              <h3 class="product-title">Clotrimazole Cream 1%</h3>
-              <div class="medicine-tags">
-                <span class="medicine-tag otc">OTC</span>
-              </div>
-              <div class="product-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star-half"></i>
-                <i class="bx bx-star"></i>
-                <span>(3.7)</span>
-              </div>
-              <div class="product-price-cart">
-                <div class="product-price">
-                  <span class="current-price">Rs.900</span>
-                </div>
-                <button class="add-to-cart">
-                  <i class="bx bx-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
+        <div class="products-grid" id="products-grid">
+          <!-- Products will be loaded dynamically -->
+          <div class="loader" id="products-loader"></div>
         </div>
 
         <!-- Pagination -->
-        <div class="pagination">
-          <a class="pagination-item active">1</a>
-          <a class="pagination-item">2</a>
-          <a class="pagination-item">3</a>
-          <a class="pagination-item">4</a>
-          <a class="pagination-item">5</a>
-          <a class="pagination-item">
-            <i class="bx bx-chevron-right"></i>
-          </a>
+        <div class="pagination" id="pagination">
+          <!-- Pagination will be added dynamically -->
         </div>
       </div>
     </div>
@@ -971,9 +590,11 @@
   const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
   const mobileNav = document.querySelector(".mobile-nav");
 
-  mobileMenuToggle.addEventListener("click", function () {
-    mobileNav.classList.toggle("active");
-  });
+  if (mobileMenuToggle && mobileNav) {
+    mobileMenuToggle.addEventListener("click", function () {
+      mobileNav.classList.toggle("active");
+    });
+  }
 
   // Mobile dropdown toggle
   const mobileDropdownToggles = document.querySelectorAll(
@@ -991,13 +612,19 @@
   const filterToggle = document.querySelector(".filter-toggle");
   const filterSidebar = document.querySelector(".filter-sidebar");
 
-  filterToggle.addEventListener("click", function () {
-    filterSidebar.classList.toggle("active");
-    this.innerHTML = filterSidebar.classList.contains("active")
-            ? '<i class="bx bx-x"></i><span>Hide Filters</span>'
-            : '<i class="bx bx-filter"></i><span>Show Filters</span>';
-  });
+  if (filterToggle && filterSidebar) {
+    filterToggle.addEventListener("click", function () {
+      filterSidebar.classList.toggle("active");
+      this.innerHTML = filterSidebar.classList.contains("active")
+              ? '<i class="bx bx-x"></i><span>Hide Filters</span>'
+              : '<i class="bx bx-filter"></i><span>Show Filters</span>';
+    });
+  }
 </script>
+
+<!-- Load cart.js before medicines.js -->
+<script src="/e_commerce/pages/js/cart.js"></script>
 <script src="/e_commerce/pages/js/medicines.js"></script>
 </body>
 </html>
+

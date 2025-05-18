@@ -16,4 +16,9 @@ public class MainController {
     public String medicines() {
         return "redirect:/e_commerce/pages/pages/medicines.html";
     }
+    
+    @GetMapping("/cart")
+    public String cart() {
+        return "redirect:/e_commerce/pages/pages/cart.html";
+    }
 }
