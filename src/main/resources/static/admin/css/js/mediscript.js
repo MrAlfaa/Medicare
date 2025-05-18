@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const medicine = {
-                id: medicineId.value || null, // Include ID for update
+                id: medicineId.value ? parseInt(medicineId.value) : null, // Convert to integer
                 name: medicineName.value,
                 category: medicineCategory.value,
                 price: parseFloat(medicinePrice.value),
@@ -197,10 +197,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 prescription: prescriptionRequired.value || 'Yes'
             };
 
-            const method = medicineId.value ? 'PUT' : 'POST';
-            const url = medicineId.value ? `/api/products/${medicine.id}` : '/api/products';
-
             try {
+                const method = medicineId.value ? 'PUT' : 'POST';
+                const url = medicineId.value ? `/api/products/${medicine.id}` : '/api/products';
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
@@ -213,9 +213,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error('Failed to save medicine');
                 }
 
+                // Get the updated product from the response
+                const savedMedicine = await response.json();
+                console.log('Medicine saved successfully:', savedMedicine);
+
                 alert(medicineId.value ? 'Medicine updated successfully!' : 'Medicine added successfully!');
                 resetForm();
-                loadMedicinesFromAPI(); // Refresh list
+                await loadMedicinesFromAPI(); // Refresh list with await
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred while saving the medicine.');

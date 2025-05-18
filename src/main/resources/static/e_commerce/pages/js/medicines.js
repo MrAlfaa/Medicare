@@ -5,28 +5,41 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterBtn = document.querySelector('.filter-btn');
     const filterToggle = document.querySelector('.filter-toggle');
     const filterSidebar = document.querySelector('.filter-sidebar');
-    const paginationContainer = document.querySelector('.pagination');
-    const productsCountDisplay = document.querySelector('.products-count span:first-child');
-    const totalProductsCount = document.querySelector('.products-count span:last-child');
+    const paginationContainer = document.querySelector('#pagination');
+    const productsCountDisplay = document.querySelector('#showing-start');
+    const productsEndDisplay = document.querySelector('#showing-end');
+    const totalProductsCount = document.querySelector('#total-products');
     
     // Variables
     let allProducts = [];
     let filteredProducts = [];
     let currentPage = 1;
-    const itemsPerPage = 12;
-    let categoryCheckboxes;
+    const itemsPerPage = 6;
     
     // Fetch products from API
     async function fetchProducts() {
         try {
             productsGrid.innerHTML = '<div class="loader"></div>';
             
-            const response = await fetch('/api/products');
+            // Add cache-busting parameter to prevent browser caching
+            const cacheBuster = new Date().getTime();
+            const response = await fetch(`/api/products?_=${cacheBuster}`);
+            
             if (!response.ok) {
-                throw new Error('Failed to fetch products');
+                throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
             }
             
             allProducts = await response.json();
+            
+            // Log the fetched products for debugging
+            console.log('Fetched products:', allProducts);
+            
+            if (!Array.isArray(allProducts) || allProducts.length === 0) {
+                console.warn('No products returned from API or invalid format');
+                productsGrid.innerHTML = '<div class="empty-state"><h3>No products available</h3><p>Please check back later.</p></div>';
+                return;
+            }
+            
             filteredProducts = [...allProducts];
             
             // Update total count
@@ -34,77 +47,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 totalProductsCount.textContent = allProducts.length;
             }
             
-            // Update category filters
-            updateCategoryFilters();
-            
+            // Apply initial filters and sorting
             applyFilters();
+            applySorting();
             renderProducts();
         } catch (error) {
             console.error('Error fetching products:', error);
-            productsGrid.innerHTML = '<div class="error-message">Failed to load products. Please try again later.</div>';
+            productsGrid.innerHTML = `<div class="empty-state"><h3>Failed to load products</h3><p>Error: ${error.message}</p></div>`;
         }
     }
     
-    // Update category filters based on available products
-    function updateCategoryFilters() {
-        // Get unique categories
-        const categories = [...new Set(allProducts.map(product => product.category))];
+    // Apply filters based on user selections
+    function applyFilters() {
+        // Get selected categories
+        const categoryFilters = document.querySelectorAll('.filter-section:nth-child(1) input[type="checkbox"]:checked');
+        const selectedCategories = Array.from(categoryFilters)
+            .map(checkbox => checkbox.id.replace('cat-', ''))
+            .filter(cat => cat !== 'all');
         
-        // Get the category filter container
-        const categoryContainer = document.querySelector('.filter-section:nth-child(1) .filter-list');
-        if (!categoryContainer) return;
+        // Get prescription status
+        const isPrescription = document.querySelector('#cat-prescription:checked') !== null;
+        const isOTC = document.querySelector('#cat-otc:checked') !== null;
         
-        // Keep the "All Medicines" checkbox
-        const allMedicinesItem = categoryContainer.querySelector('.filter-item:first-child');
+        // Get price range
+        const priceInputs = document.querySelectorAll('.price-input');
+        const minPrice = parseFloat(priceInputs[0].value) || 0;
+        const maxPrice = parseFloat(priceInputs[1].value) || Infinity;
         
-        // Clear existing category items except the first one
-        categoryContainer.innerHTML = '';
-        if (allMedicinesItem) {
-            categoryContainer.appendChild(allMedicinesItem);
-        }
-        
-        // Add category filters
-        categories.forEach(category => {
-            const count = allProducts.filter(product => product.category === category).length;
+        // Filter products
+        filteredProducts = allProducts.filter(product => {
+            // Skip filtering if "All" is selected and no specific categories are selected
+            const categoryFilter = document.querySelector('#cat-all:checked') !== null && selectedCategories.length === 0
+                ? true
+                : selectedCategories.length === 0 || selectedCategories.includes(product.category.toLowerCase());
             
-            const filterItem = document.createElement('div');
-            filterItem.className = 'filter-item';
-            filterItem.innerHTML = `
-                <div class="filter-checkbox">
-                    <input type="checkbox" id="cat-${category.toLowerCase()}" class="category-filter" value="${category}" />
-                    <label for="cat-${category.toLowerCase()}">
-                        ${category}
-                        <span class="filter-count">(${count})</span>
-                    </label>
-                </div>
-            `;
+            // Prescription filter
+            const prescriptionFilter = (!isPrescription && !isOTC) || 
+                (isPrescription && product.prescription === 'Yes') || 
+                (isOTC && product.prescription === 'No');
             
-            categoryContainer.appendChild(filterItem);
+            // Price filter
+            const priceFilter = product.price >= minPrice && product.price <= maxPrice;
+            
+            return categoryFilter && prescriptionFilter && priceFilter;
         });
         
-        // Update the prescription filters
-        const prescriptionContainer = document.querySelector('.filter-section:nth-child(2) .filter-list');
-        if (prescriptionContainer) {
-            const prescriptionCount = allProducts.filter(product => product.prescription === 'Yes').length;
-            const otcCount = allProducts.filter(product => product.prescription === 'No').length;
-            
-            const prescriptionCheckbox = prescriptionContainer.querySelector('#cat-prescription');
-            const otcCheckbox = prescriptionContainer.querySelector('#cat-otc');
-            
-            if (prescriptionCheckbox && prescriptionCheckbox.parentElement) {
-                prescriptionCheckbox.parentElement.querySelector('.filter-count').textContent = `(${prescriptionCount})`;
-            }
-            
-            if (otcCheckbox && otcCheckbox.parentElement) {
-                otcCheckbox.parentElement.querySelector('.filter-count').textContent = `(${otcCount})`;
-            }
-        }
-        
-        // Get category checkboxes
-        categoryCheckboxes = document.querySelectorAll('.category-filter');
+        // Reset to first page after filtering
+        currentPage = 1;
     }
     
-    // Apply sorting to filtered products
+    // Apply sorting
     function applySorting() {
         if (!sortSelect) return;
         
@@ -118,87 +110,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 filteredProducts.sort((a, b) => b.price - a.price);
                 break;
             case 'newest':
-                // Assuming newer products have higher IDs
                 filteredProducts.sort((a, b) => b.id - a.id);
                 break;
-            case 'rating':
-                // For demo - would use actual ratings in production
-                filteredProducts.sort((a, b) => (Math.random() * 2) - 1);
-                break;
-            case 'popularity':
             default:
-                // For demo - would use actual popularity in production
-                filteredProducts.sort((a, b) => (Math.random() * 2) - 1);
+                // Default sort
+                filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
                 break;
         }
     }
     
-    // Apply filters
-    function applyFilters() {
-        const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
-        const prescriptionRequired = document.querySelector('#cat-prescription:checked') !== null;
-        const otcOnly = document.querySelector('#cat-otc:checked') !== null;
-        
-        // Get price range
-        const minPrice = parseFloat(document.querySelector('.price-input:first-of-type')?.value) || 0;
-        const maxPrice = parseFloat(document.querySelector('.price-input:last-of-type')?.value) || Infinity;
-        
-        // Reset to first page
-        currentPage = 1;
-        
-        // Filter products
-        filteredProducts = allProducts.filter(product => {
-            // Category filter
-            if (selectedCategories.length > 0 && !selectedCategories.includes(product.category)) {
-                return false;
-            }
-            
-            // Prescription filter
-            if (prescriptionRequired && product.prescription !== 'Yes') {
-                return false;
-            }
-            
-            if (otcOnly && product.prescription !== 'No') {
-                return false;
-            }
-            
-            // Price filter
-            if (product.price < minPrice || product.price > maxPrice) {
-                return false;
-            }
-            
-            return true;
-        });
-        
-        // Apply sorting
-        applySorting();
-    }
-    
-    // Render products in the grid
+    // Render products
     function renderProducts() {
         if (!productsGrid) return;
         
-        // Get paginated products
+        // Calculate pagination
         const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, filteredProducts.length);
         const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
         
-        // Update showing count
-        if (productsCountDisplay) {
-            productsCountDisplay.textContent = `${startIndex + 1}-${Math.min(endIndex, filteredProducts.length)} of ${filteredProducts.length}`;
+        // Update products count display
+        if (productsCountDisplay && productsEndDisplay) {
+            productsCountDisplay.textContent = filteredProducts.length > 0 ? startIndex + 1 : 0;
+            productsEndDisplay.textContent = endIndex;
         }
         
         // Clear products grid
         productsGrid.innerHTML = '';
         
+        // Check if any products to display
         if (paginatedProducts.length === 0) {
-            productsGrid.innerHTML = `
-                <div class="empty-state">
-                    <i class="bx bx-search"></i>
-                    <h3>No products found</h3>
-                    <p>Try adjusting your filters or search criteria.</p>
-                </div>
-            `;
+            productsGrid.innerHTML = '<div class="empty-state"><h3>No products found</h3><p>Try adjusting your filters</p></div>';
             return;
         }
         
@@ -207,13 +148,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
             
-            // Random image for demo purposes - you'd use actual product images in production
-            const imageIndex = Math.floor(Math.random() * 12) + 8;
+            // Create placeholder image URL
+            const placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFOUVDRUYiLz48cGF0aCBkPSJNODAgODBIMTIwVjEyMEg4MFY4MFoiIGZpbGw9IiNBREI1QkQiLz48cGF0aCBkPSJNOTUgNjVIMTA1Vjg1SDEyNVY5NUgxMDVWMTE1SDk1Vjk1SDc1Vjg1SDk1VjY1WiIgZmlsbD0iIzZDNzU3RCIvPjwvc3ZnPg==';
             
             productCard.innerHTML = `
                 <div class="product-image">
-                    <img src="/e_commerce/pages/images/product_${imageIndex}.png" alt="${product.name}" 
-                         onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFOUVDRUYiLz48cGF0aCBkPSJNODAgODBIMTIwVjEyMEg4MFY4MFoiIGZpbGw9IiNBREI1QkQiLz48cGF0aCBkPSJNOTUgNjVIMTA1Vjg1SDEyNVY5NUgxMDVWMTE1SDk1Vjk1SDc1Vjg1SDk1VjY1WiIgZmlsbD0iIzZDNzU3RCIvPjwvc3ZnPg==';" />
+                    <img src="${placeholderImage}" alt="${product.name}" />
                     <button class="wishlist-btn">
                         <i class="bx bx-heart"></i>
                     </button>
@@ -248,46 +188,22 @@ document.addEventListener('DOMContentLoaded', function() {
             productsGrid.appendChild(productCard);
         });
         
-        // Add event listeners to add to cart buttons
+        // Add event listeners to Add to Cart buttons
         document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = this.dataset.id;
-                console.log(`Add to cart clicked for product ID: ${productId}`);
-                
-                // Check if Cart is available
-                if (window.Cart) {
-                    console.log('Cart module found, adding item...');
-                    window.Cart.addItem(productId);
-                } else {
-                    console.error('Cart module not found');
-                    
-                    // Try to reload the cart script dynamically
-                    const cartScript = document.createElement('script');
-                    cartScript.src = '/e_commerce/pages/js/cart.js';
-                    cartScript.onload = function() {
-                        console.log('Cart script loaded dynamically');
-                        if (window.Cart) {
-                            window.Cart.addItem(productId);
-                        } else {
-                            alert('Unable to add item to cart. Please try again later.');
-                        }
-                    };
-                    document.head.appendChild(cartScript);
-                }
-            });
+            button.addEventListener('click', addToCart);
         });
         
         // Render pagination
         renderPagination();
     }
     
-    // Render pagination controls
+    // Render pagination
     function renderPagination() {
         if (!paginationContainer) return;
         
         const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
         
-        // Clear pagination
+        // Clear pagination container
         paginationContainer.innerHTML = '';
         
         // Previous page button
@@ -298,15 +214,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentPage > 1) {
                 currentPage--;
                 renderProducts();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo(0, 0);
             }
         });
         paginationContainer.appendChild(prevBtn);
         
         // Page numbers
-        const maxPageItems = 5;
-        const startPage = Math.max(1, currentPage - Math.floor(maxPageItems / 2));
-        const endPage = Math.min(totalPages, startPage + maxPageItems - 1);
+        const maxVisiblePages = 5;
+        const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
         
         for (let i = startPage; i <= endPage; i++) {
             const pageLink = document.createElement('a');
@@ -315,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
             pageLink.addEventListener('click', () => {
                 currentPage = i;
                 renderProducts();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo(0, 0);
             });
             paginationContainer.appendChild(pageLink);
         }
@@ -328,39 +244,174 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentPage < totalPages) {
                 currentPage++;
                 renderProducts();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo(0, 0);
             }
         });
         paginationContainer.appendChild(nextBtn);
     }
     
+    // Add to cart functionality
+    function addToCart() {
+        const productId = this.dataset.id;
+        console.log('Adding product to cart, product ID:', productId);
+        
+        if (!productId) {
+            console.error('No product ID found');
+            return;
+        }
+        
+        // Find the product in our allProducts array
+        const product = allProducts.find(p => p.id == productId);
+        
+        if (!product) {
+            console.error('Product not found in products array:', productId);
+            showNotification('Product not found. Please try again.', 'error');
+            return;
+        }
+        
+        // Log the product we're adding
+        console.log('Product to add:', product);
+        
+        // Use the Cart module to add the item if available
+        if (window.Cart && typeof window.Cart.addItem === 'function') {
+            // The second parameter is quantity (default to 1)
+            window.Cart.addItem(productId, 1)
+                .then(success => {
+                    if (success) {
+                        showNotification(`${product.name} added to cart!`, 'success');
+                    } else {
+                        showNotification('Failed to add product to cart', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error in Cart.addItem:', err);
+                    showNotification('Error adding product to cart', 'error');
+                });
+        } else {
+            console.error('Cart module not found or not properly initialized');
+            
+            // Create our own cart implementation as fallback
+            const cart = JSON.parse(localStorage.getItem('medicare_cart') || '[]');
+            
+            // Check if item already exists
+            const existingItemIndex = cart.findIndex(item => item.id == productId);
+            
+            if (existingItemIndex >= 0) {
+                // Update quantity
+                cart[existingItemIndex].quantity += 1;
+            } else {
+                // Add new item
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1,
+                    category: product.category,
+                    prescription: product.prescription
+                });
+            }
+            
+            // Save back to localStorage
+            localStorage.setItem('medicare_cart', JSON.stringify(cart));
+            
+            // Show notification
+            showNotification(`${product.name} added to cart!`, 'success');
+            
+            // Try to reload cart.js
+            loadCartScript();
+        }
+    }
+
+    // Add these helper functions for the addToCart function
+    function showNotification(message, type = 'success') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => notification.classList.add('show'), 10);
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+        
+        // Update cart icon if applicable
+        updateCartIcon();
+    }
+
+    function updateCartIcon() {
+        const cartIcon = document.querySelector('.cart-icon');
+        if (cartIcon) {
+            cartIcon.classList.add('pulse');
+            setTimeout(() => cartIcon.classList.remove('pulse'), 500);
+            
+            // Update count if available
+            const countElement = cartIcon.querySelector('.cart-count');
+            if (countElement) {
+                const cart = JSON.parse(localStorage.getItem('medicare_cart') || '[]');
+                const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+                countElement.textContent = count;
+            }
+        }
+    }
+
+    function loadCartScript() {
+        if (document.querySelector('script[src="/e_commerce/pages/js/cart.js"]')) {
+            console.log('Cart script already exists, reloading page instead');
+            window.location.reload();
+            return;
+        }
+        
+        const script = document.createElement('script');
+        script.src = '/e_commerce/pages/js/cart.js';
+        script.onload = () => {
+            console.log('Cart script loaded successfully');
+            if (window.Cart && typeof window.Cart.addItem === 'function') {
+                console.log('Cart functionality is now available');
+            }
+        };
+        script.onerror = () => console.error('Failed to load cart script');
+        document.head.appendChild(script);
+    }
+    
     // Event Listeners
     function setupEventListeners() {
-        // Sort select change
+        // Sort select
         if (sortSelect) {
-            sortSelect.addEventListener('change', function() {
+            sortSelect.addEventListener('change', () => {
                 applySorting();
                 renderProducts();
             });
         }
         
-        // Filter button click
+        // Apply filters button
         if (filterBtn) {
-            filterBtn.addEventListener('click', function() {
+            filterBtn.addEventListener('click', () => {
                 applyFilters();
+                applySorting();
                 renderProducts();
             });
         }
         
-        // Filter toggle for mobile
-        if (filterToggle && filterSidebar) {
-            filterToggle.addEventListener('click', function() {
-                filterSidebar.classList.toggle('active');
-                this.innerHTML = filterSidebar.classList.contains('active')
-                    ? '<i class="bx bx-x"></i><span>Hide Filters</span>'
-                    : '<i class="bx bx-filter"></i><span>Show Filters</span>';
+        // Checkbox filters (categories, prescription)
+        document.querySelectorAll('.filter-checkbox input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if (checkbox.id === 'cat-all' && checkbox.checked) {
+                    // Uncheck all other category checkboxes
+                    document.querySelectorAll('.filter-section:nth-child(1) input[type="checkbox"]:not(#cat-all)')
+                        .forEach(cb => cb.checked = false);
+                }
+                
+                // If any other category is checked, uncheck "All"
+                if (checkbox.id !== 'cat-all' && checkbox.checked) {
+                    document.querySelector('#cat-all').checked = false;
+                }
             });
-        }
+        });
     }
     
     // Initialize
@@ -369,6 +420,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setupEventListeners();
     }
     
-    // Run initialization
+    // Start the application
     init();
 });
